@@ -1,5 +1,6 @@
 from .Token import *
 
+
 class Lexer(object):
     def __init__(self, text):
         # client string input, e.g. "3 * 5", "12 / 3 * 4", etc
@@ -87,9 +88,28 @@ class Lexer(object):
 
             if self.current_char == '=':
                 self.advance()
-                return Token(ASSIGN, '=')
+                if self.current_char == '=':
+                    self.advance()
+                    return Token(EQUALS, '==')
+                else:
+                    return Token(ASSIGN, '=')
+
+            if self.current_char == '<':
+                self.advance()
+                if self.current_char == '=':
+                    self.advance()
+                    return Token(LEQUALS, '<=')
+                else:
+                    return Token(LESS, '<')
+
+            if self.current_char == '>':
+                self.advance()
+                if self.current_char == '=':
+                    self.advance()
+                    return Token(GEQUALS, '>=')
+                else:
+                    return Token(GREATER, '>')
 
             self.error()
 
         return Token(EOF, None)
-

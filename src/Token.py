@@ -2,8 +2,23 @@
 #
 # EOF (end-of-file) token is used to indicate that
 # there is no more input left for lexical analysis
-INTEGER, PLUS, MINUS, MUL, DIV, EOF, OPEN_PARENTHESES, CLOSE_PARENTHESES, STRING, ASSIGN, COMMA = (
-    'INTEGER', 'PLUS', 'MINUS', 'MUL', 'DIV', 'EOF', 'OPEN_PARENTHESES', 'CLOSE_PARENTHESES', 'STRING', 'ASSIGN', 'COMMA'
+INTEGER, PLUS, MINUS, MUL, DIV, EOF, OPEN_PARENTHESES, CLOSE_PARENTHESES, STRING, ASSIGN, COMMA, EQUALS, LESS, GREATER, LEQUALS, GEQUALS = (
+    'INTEGER',
+    'PLUS',
+    'MINUS',
+    'MUL',
+    'DIV',
+    'EOF',
+    'OPEN_PARENTHESES',
+    'CLOSE_PARENTHESES',
+    'STRING',
+    'ASSIGN',
+    'COMMA',
+    'EQUALS',
+    'LESS',
+    'GREATER',
+    'LEQUALS',
+    'GEQUALS '
 )
 
 

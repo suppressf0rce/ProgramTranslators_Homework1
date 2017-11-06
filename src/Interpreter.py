@@ -1,21 +1,26 @@
 import re
-from src.RafMath import RafMath
 
 from src.Lexer import *
+from src.RafMath import RafMath
 
 # Dictionary of variables
 variables = {}
 
 # Dictionary of functions and number of params
 functions = {
-    "sin":1,
-    "cos":1,
-    "tg":1,
-    "ctg":1,
-    "log":1,
-    "sqrt":1,
-    "pow":2
+    "sin": 1,
+    "cos": 1,
+    "tg": 1,
+    "ctg": 1,
+    "log": 1,
+    "sqrt": 1,
+    "pow": 2
 }
+
+
+def func_caller(func, *args, **kwargs):
+    return func(*args, **kwargs)
+
 
 class Interpreter(object):
     def __init__(self, lexer):
@@ -25,9 +30,6 @@ class Interpreter(object):
 
     def error(self):
         raise Exception('Invalid syntax')
-
-    def function_caller(self, function, *args, **kwargs):
-        return function(*args, **kwargs)
 
     def eat(self, token_type):
         # compare the current token type with the passed token
@@ -67,7 +69,7 @@ class Interpreter(object):
             # Get function parameters
             i = 0
             params = []
-            while i < functions[name]:
+            while self.current_token.type != CLOSE_PARENTHESES:
                 result = self.expr()
                 if result is not None:
                     params.append(result)
@@ -76,7 +78,9 @@ class Interpreter(object):
                 i += 1
 
             if len(params) != functions[name]:
-                raise TypeError("Function: " + name + " requires " + str(functions[name]) + " argument/s , but has been given " + str(len(params)) + " argument/s")
+                raise TypeError("Function: " + name + " requires " + str(functions[name]) + "argument/s , but has "
+                                                                                            "been given " + str(len(
+                    params)) + " argument/s")
 
             args = []
             tmp = getattr(RafMath, name, *args)
@@ -86,11 +90,11 @@ class Interpreter(object):
             else:
                 raise Exception("Invalid call of function: " + name + " missing ) sign")
 
-            return self.function_caller(tmp, args, *params)
+            return func_caller(tmp, args, *params)
 
         else:
             # Function hasn't been declared, raising exception
-            raise Exception("Call of the undefined function: "+name)
+            raise Exception("Call of the undefined function: " + name)
 
     def variable(self, name):
         """
@@ -196,6 +200,8 @@ class Interpreter(object):
         """Arithmetic expression parser / interpreter.
 
         expr:
+            acum ((GREATER | LESS | EQUAL | GREATER_EQUAL | LESS_EQUAL) acum)*
+        acum:
             term ((PLUS | MINUS) term)*
         term:
             unary ((MUL | DIV) (factor | alpha))*
@@ -211,6 +217,33 @@ class Interpreter(object):
             [a-zA-z][a-zA-z0-9]*
         factor:
             INTEGER | BOOL | \{
+        """
+        result = self.acum()
+
+        while self.current_token.type in (EQUALS, LESS, GREATER, GEQUALS, LEQUALS):
+            token = self.current_token
+            if token.type == EQUALS:
+                self.eat(EQUALS)
+                result = result == self.acum()
+            elif token.type == LESS:
+                self.eat(LESS)
+                result = result < self.acum()
+            elif token.type == GREATER:
+                self.eat(GREATER)
+                result = result > self.acum()
+            elif token.type == LEQUALS:
+                self.eat(LEQUALS)
+                result = result <= self.acum()
+            elif token.type == GEQUALS:
+                self.eat(GEQUALS)
+                result = result >= self.acum()
+
+        return result
+
+    def acum(self):
+        """
+        acum:
+            term ((PLUS | MINUS) term)*
         """
         result = self.term()
 
