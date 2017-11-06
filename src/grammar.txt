@@ -1,5 +1,8 @@
 expr:
-    term ((PLUS | MINUS) term)*
+    acum ((GREATER | LESS | EQUAL | GREATER_EQUAL | LESS_EQUAL) acum)*
+
+acum:
+   term ((PLUS | MINUS) term)* 
 
 term:
     unary ((MUL | DIV) (factor | alpha))*
