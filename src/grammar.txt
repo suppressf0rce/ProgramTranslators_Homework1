@@ -20,4 +20,4 @@ name:
     [a-zA-z][a-zA-z0-9]*
 
 factor:
-    INTEGER | \{
+    INTEGER | \(
